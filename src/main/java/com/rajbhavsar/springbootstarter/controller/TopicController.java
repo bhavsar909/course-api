@@ -1,6 +1,6 @@
 package com.rajbhavsar.springbootstarter.controller;
 
-import com.rajbhavsar.springbootstarter.dto.Topic;
+import com.rajbhavsar.springbootstarter.dto.TopicDTO;
 import com.rajbhavsar.springbootstarter.service.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,32 +21,32 @@ public class TopicController
 	private TopicService topicService;
 
 	@RequestMapping("/topics")
-	public List<Topic> getTopics()
+	public List<TopicDTO> getTopics()
 	{
 		return topicService.getTopics();
 	}
 
 	@GetMapping("/topics/{topicId}")
-	public Topic getTopicById(@PathVariable String topicId)
+	public TopicDTO getTopicById(@PathVariable String topicId)
 	{
 		return topicService.getTopicById(topicId);
 	}
 
 	@PostMapping("/topics")
-	public Boolean addTopic(@RequestBody Topic topic)
+	public void addTopic(@RequestBody TopicDTO topic)
 	{
-		return topicService.addTopic(topic);
+		topicService.addTopic(topic);
 	}
 
 	@PutMapping("/topics/{topicId}")
-	public void updateTopic(@PathVariable String topicId, @RequestBody Topic topic)
+	public void updateTopic(@PathVariable String topicId, @RequestBody TopicDTO topic)
 	{
 		topicService.updateTopic(topicId, topic);
 	}
 
 	@DeleteMapping("/topics/{topicId}")
-	public Boolean deleteTopic(@PathVariable String topicId)
+	public void deleteTopic(@PathVariable String topicId)
 	{
-		return topicService.deleteTopic(topicId);
+		topicService.deleteTopic(topicId);
 	}
 }
