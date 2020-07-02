@@ -1,46 +1,53 @@
 package com.rajbhavsar.springbootstarter.service;
 
-import com.rajbhavsar.springbootstarter.dto.Topic;
+import com.rajbhavsar.springbootstarter.dto.TopicDTO;
+import com.rajbhavsar.springbootstarter.model.ITopic;
+import com.rajbhavsar.springbootstarter.model.impl.Topic;
+import com.rajbhavsar.springbootstarter.repository.TopicRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class TopicService
 {
-	private List<Topic> topics = new ArrayList<>(
-			Arrays.asList(new Topic("spring", "Spring", "In this we will cover all basic Spring fundamentals"),
-					new Topic("java", "Java", "In this we will cover all basic Java fundamentals"),
-					new Topic("dbms", "Dbms", "In this we will cover all basic dbms fundamentals")
-			)
-	);
+	@Autowired
+	private TopicRepository topicRepository;
 
-	public List<Topic> getTopics()
+	public List<TopicDTO> getTopics()
 	{
-		return topics;
+		List<ITopic> topicList = new ArrayList<>();
+		topicRepository.findAll().forEach(topicList::add);
+		List<TopicDTO> topicDTOList = new ArrayList<>();
+		topicList.forEach(topic ->
+				topicDTOList.add(new TopicDTO(topic.getTopicId(), topic.getTopicName(), topic.getDescription())));
+		return topicDTOList;
 	}
 
-	public Topic getTopicById(String topicId)
+	public TopicDTO getTopicById(String topicId)
 	{
-		return topics.stream().filter(topic -> topic.getTopicId().equals(topicId)).findFirst().get();
+		ITopic topic = topicRepository.findById(topicId).orElse(null);
+		if (topic != null)
+			return new TopicDTO(topic.getTopicId(), topic.getTopicName(), topic.getDescription());
+		else
+			return null;
 	}
 
-	public Boolean addTopic(Topic topic){
-		return topics.add(topic);
+	public void addTopic(TopicDTO topicDTO)
+	{
+		Topic topic = new Topic(topicDTO.getTopicId(), topicDTO.getTopicName(), topicDTO.getDescription());
+		topicRepository.save(topic);
 	}
 
-	public void updateTopic(String topicId, Topic topic){
-		for (int i = 0; i < topics.size(); i++)
-		{
-			if (topics.get(i).getTopicId().equals(topicId)){
-				topics.set(i,topic);
-			}
-		}
+	public void updateTopic(String topicId, TopicDTO topicDTO)
+	{
+		topicRepository.save(new Topic(topicDTO.getTopicId(), topicDTO.getTopicName(), topicDTO.getDescription()));
 	}
 
-	public Boolean deleteTopic(String topicId){
-		return topics.removeIf(topic -> topic.getTopicId().equals(topicId));
+	public void deleteTopic(String topicId)
+	{
+		topicRepository.deleteById(topicId);
 	}
 }

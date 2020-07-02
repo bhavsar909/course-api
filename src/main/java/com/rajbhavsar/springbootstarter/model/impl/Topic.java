@@ -1,7 +1,14 @@
-package com.rajbhavsar.springbootstarter.dto;
+package com.rajbhavsar.springbootstarter.model.impl;
 
-public class Topic
+import com.rajbhavsar.springbootstarter.model.ITopic;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
+public class Topic implements ITopic
 {
+	@Id
 	private String topicId;
 	private String topicName;
 	private String description;
